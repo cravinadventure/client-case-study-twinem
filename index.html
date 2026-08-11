@@ -127,6 +127,17 @@
   .toolflow{font-family:var(--mono);font-size:13px;line-height:2;color:var(--text-soft)}
   .stat{font-size:clamp(30px,5vw,56px);font-weight:800;letter-spacing:-1px;color:var(--accent);font-family:var(--mono)}
 
+  .strobewrap{position:relative;cursor:pointer}
+  .strobewrap .playbtn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(10,11,14,.25);transition:.15s}
+  .strobewrap .playbtn span{width:74px;height:74px;border-radius:50%;background:rgba(10,11,14,.75);
+    border:2px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-size:26px;padding-left:6px}
+  .strobewrap:hover .playbtn span{background:var(--accent);color:var(--on-accent)}
+  .strobewrap.playing .playbtn{display:none}
+  .epilepsy{margin-top:14px;font-family:var(--mono);font-size:12.5px;letter-spacing:.5px;
+    color:#febc2e;border:1px solid rgba(254,188,46,.35);background:rgba(254,188,46,.06);
+    border-radius:10px;padding:10px 14px}
   .cta2{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:920px;margin:0 auto}
   .bigbtn{display:flex;align-items:center;justify-content:center;text-align:center;
     font-family:var(--mono);font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
@@ -357,10 +368,23 @@
   <p>Show night: nobody on the boat could run the visuals. The sound engineer tried, it didn't come together, and the pack sat out the set it was built for.</p>
   <p>And <b>nothing was wasted.</b> These were never one-night decorations. Six loops in TWINEM's exact colors are their <b>visual identity</b> now, every gig, every clip, already made and theirs. Their words after the show: <b>"You are a magician."</b></p>
   
-  <div class="mt">
-    <video class="vid169" autoplay loop muted playsinline preload="auto"><source src="assets/result_kaleidoscope.mp4?v=1" type="video/mp4"></video>
-    <div class="cap">The bonus kaleidoscope loop: built for a peak moment, owned forever</div>
+  <div class="grid2 mt">
+    <div>
+      <div class="strobewrap" data-strobe>
+        <video class="vid169" muted playsinline preload="none" poster="assets/result_dancing_strobe_poster.jpg"><source src="assets/result_dancing_strobe.mp4?v=1" type="video/mp4"></video>
+        <div class="playbtn"><span>▶</span></div>
+      </div>
+      <div class="cap">Bonus: dancing twin pair, strobe</div>
+    </div>
+    <div>
+      <div class="strobewrap" data-strobe>
+        <video class="vid169" muted playsinline preload="none" poster="assets/result_kaleidoscope_poster.jpg"><source src="assets/result_kaleidoscope.mp4?v=1" type="video/mp4"></video>
+        <div class="playbtn"><span>▶</span></div>
+      </div>
+      <div class="cap">Bonus: kaleidoscope, built for a peak moment</div>
+    </div>
   </div>
+  <div class="epilepsy">⚠ Photosensitivity warning: these two loops strobe rapidly. Click a frame to play its 10-second loop; click again to stop.</div>
 </section>
 
 <!-- SCOPE -->
@@ -435,7 +459,16 @@
 
 <script>
 (function(){
-  var vids=[].slice.call(document.querySelectorAll('video'));
+  // Strobe clips are the one exception to always-loop: click-to-play, stop at end.
+  [].slice.call(document.querySelectorAll('.strobewrap')).forEach(function(w){
+    var v=w.querySelector('video');
+    w.addEventListener('click',function(){
+      if(v.paused){ w.classList.add('playing'); v.currentTime=0; v.play(); }
+      else { v.pause(); v.load(); w.classList.remove('playing'); }
+    });
+    v.addEventListener('ended',function(){ v.load(); w.classList.remove('playing'); });
+  });
+  var vids=[].slice.call(document.querySelectorAll('video')).filter(function(v){return !v.closest('[data-strobe]');});
   vids.forEach(function(v){v.muted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');});
   function play(v){var p=v.play();if(p&&p.catch)p.catch(function(){});}
   if('IntersectionObserver' in window){
