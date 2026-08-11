@@ -164,7 +164,13 @@
   @media(max-width:620px){.cta2{grid-template-columns:1fr}}
   footer{padding:50px 0 70px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;text-align:center}
 
+  .cap-mobile{display:none}
   @media(max-width:820px){
+    .mossgrid{grid-template-columns:1fr 1fr !important}
+    .mossgrid > div:nth-child(n+3){display:none}
+    .cap-desktop{display:none}
+    .cap-mobile{display:inline}
+
     .wide{padding-left:22px;padding-right:22px}
     .split,.grid2,.grid3,.grid4,.twocol{grid-template-columns:1fr}
     .moodgrid{column-count:2}
@@ -345,7 +351,7 @@
     <div><img class="img169" src="assets/moss_tree.jpg" alt="Spanish moss hanging in long strands from an oak tree" style="object-fit:cover"><div class="cap">Spanish moss, doing what it does</div></div>
     <div><img class="img169" src="assets/moss_closeup.jpg" alt="Spanish moss strands up close, thin curling silver-green threads" style="object-fit:cover"><div class="cap">The strands, up close</div></div>
   </div>
-  <div class="grid4 mt">
+  <div class="grid4 mossgrid mt">
     <div><img src="assets/moss_frame_1.jpg" alt="Spanish moss stop-motion frame 1 of 8, white on black" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000"></div>
     <div><img src="assets/moss_frame_2.jpg" alt="Spanish moss stop-motion frame 2 of 8, white on black" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000"></div>
     <div><img src="assets/moss_frame_3.jpg" alt="Spanish moss stop-motion frame 3 of 8, white on black" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000"></div>
@@ -355,7 +361,7 @@
     <div><img src="assets/moss_frame_7.jpg" alt="Spanish moss stop-motion frame 7 of 8, white on black" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000"></div>
     <div><img src="assets/moss_frame_8.jpg" alt="Spanish moss stop-motion frame 8 of 8, white on black" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000"></div>
   </div>
-  <div class="cap">All eight frames: the moss laid out, rearranged by hand between every shot</div>
+  <div class="cap"><span class="cap-desktop">All eight frames: the moss laid out, rearranged by hand between every shot</span><span class="cap-mobile">Two of the eight frames: the moss rearranged by hand between every shot</span></div>
   <div class="mt">
     <video class="vid169" autoplay loop muted playsinline preload="auto"><source src="assets/loop05_telekinesis.mp4?v=1" type="video/mp4"></video>
     <div class="cap">The final loop: moss, reading as electricity</div>
