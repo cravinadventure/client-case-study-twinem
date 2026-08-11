@@ -272,15 +272,17 @@ html, body { overflow: hidden; }
 (function(){
   function fitTV(){
     var tv = document.querySelector('.tv');
-    if (!tv) return;
+    if (!tv || !innerWidth || !innerHeight) return;
     tv.style.transform = 'none';
     var r = tv.getBoundingClientRect();
+    if (!r.width || !r.height) return;
     var s = Math.min(innerWidth / (r.width + 12), innerHeight / (r.height + 12), 1);
-    tv.style.transform = 'scale(' + s + ')';
+    if (s > 0.05) tv.style.transform = 'scale(' + s + ')';
   }
   addEventListener('resize', fitTV);
   addEventListener('load', fitTV);
-  setTimeout(fitTV, 300); setTimeout(fitTV, 1200);
+  if (window.ResizeObserver) new ResizeObserver(fitTV).observe(document.documentElement);
+  setTimeout(fitTV, 300); setTimeout(fitTV, 1200); setTimeout(fitTV, 3000);
 })();
 </script>
 </body>
