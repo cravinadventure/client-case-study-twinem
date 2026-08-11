@@ -143,6 +143,13 @@
   .baslider .ba-tag-l{left:12px;color:var(--paper)}
   .baslider .ba-tag-r{right:12px;color:var(--accent)}
 
+  /* hover magnifier (chrome wobble) */
+  .magwrap{position:relative}
+  .magwrap canvas.maglens{position:absolute;width:230px;height:230px;border-radius:50%;
+    border:2px solid var(--accent);box-shadow:0 0 24px rgba(228,23,94,.45), inset 0 0 12px rgba(0,0,0,.6);
+    pointer-events:none;display:none;background:#000;z-index:5}
+  .magwrap:hover{cursor:crosshair}
+
   .strobewrap{position:relative;cursor:pointer}
   .strobewrap .playbtn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     background:rgba(10,11,14,.25);transition:.15s}
@@ -293,8 +300,11 @@
   <p>The 3D logo was built in <b>Blender</b> from their true logo vector: a scripted wobble, a static camera, and a perfectly seamless loop. I sent versions with and without the outline; they picked no-outline.</p>
   <p>The trick is the reflection. Chrome mirrors whatever world surrounds it, so instead of a generic studio environment, I built a <b>pink-and-teal liquid-swirl world out of their own merch colors</b>. The logo literally reflects their brand as it turns. When they asked for it slightly faster, the speed-up happened in the edit, no re-render needed.</p>
   <div class="mt">
-    <video class="vid169" autoplay loop muted playsinline preload="auto"><source src="assets/chrome_wobble_zoom.mp4?v=1" type="video/mp4"></video>
-    <div class="cap">The chrome wobble, up close: their merch colors living in the reflections</div>
+    <div class="magwrap" id="chromemag">
+      <video class="vid169" autoplay loop muted playsinline preload="auto"><source src="assets/chrome_wobble_zoom.mp4?v=2" type="video/mp4"></video>
+      <canvas class="maglens" width="460" height="460"></canvas>
+    </div>
+    <div class="cap">The chrome wobble. Hover to magnify the reflections.</div>
   </div>
 </section>
 
@@ -545,6 +555,31 @@
     });
     v.addEventListener('ended',function(){ v.load(); w.classList.remove('playing'); });
   });
+  // hover magnifier: draws a 3x zoom of the video at the cursor into a circular canvas
+  (function(){
+    var wrap=document.getElementById('chromemag');
+    if(!wrap || window.matchMedia('(pointer: coarse)').matches) return;
+    var v=wrap.querySelector('video'), lens=wrap.querySelector('canvas'), ctx=lens.getContext('2d');
+    var active=false, mx=0, my=0, Z=3;
+    function draw(){
+      if(!active) return;
+      var r=wrap.getBoundingClientRect();
+      var relx=mx/r.width, rely=my/r.height;
+      var sw=v.videoWidth/Z, sh=v.videoHeight/Z;
+      var sx=Math.max(0,Math.min(v.videoWidth-sw, relx*v.videoWidth - sw/2));
+      var sy=Math.max(0,Math.min(v.videoHeight-sh, rely*v.videoHeight - sh/2));
+      ctx.drawImage(v, sx, sy, sw, sh, 0, 0, lens.width, lens.height);
+      requestAnimationFrame(draw);
+    }
+    wrap.addEventListener('mousemove', function(e){
+      var r=wrap.getBoundingClientRect();
+      mx=e.clientX-r.left; my=e.clientY-r.top;
+      lens.style.left=(mx-115)+'px'; lens.style.top=(my-115)+'px';
+      if(!active){ active=true; lens.style.display='block'; requestAnimationFrame(draw); }
+    });
+    wrap.addEventListener('mouseleave', function(){ active=false; lens.style.display='none'; });
+  })();
+
   // before/after drag sliders
   [].slice.call(document.querySelectorAll('.baslider')).forEach(function(el){
     function setPos(clientX){
