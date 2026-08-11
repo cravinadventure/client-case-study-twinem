@@ -127,6 +127,22 @@
   .toolflow{font-family:var(--mono);font-size:13px;line-height:2;color:var(--text-soft)}
   .stat{font-size:clamp(30px,5vw,56px);font-weight:800;letter-spacing:-1px;color:var(--accent);font-family:var(--mono)}
 
+  /* before/after drag slider */
+  .baslider{position:relative;overflow:hidden;border:1px solid var(--accent-dim);background:#000;
+    aspect-ratio:16/9;cursor:ew-resize;touch-action:none;user-select:none;--pos:50%}
+  .baslider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border:none;pointer-events:none}
+  .baslider .ba-top{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+  .baslider .ba-line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;background:var(--accent);
+    transform:translateX(-1px);pointer-events:none;box-shadow:0 0 12px rgba(228,23,94,.6)}
+  .baslider .ba-knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:44px;height:44px;border-radius:50%;background:rgba(10,11,14,.8);border:2px solid var(--accent);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:15px}
+  .baslider .ba-tag{position:absolute;top:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;
+    text-transform:uppercase;background:rgba(10,11,14,.75);border:1px solid var(--line);border-radius:20px;
+    padding:4px 11px;pointer-events:none}
+  .baslider .ba-tag-l{left:12px;color:var(--paper)}
+  .baslider .ba-tag-r{right:12px;color:var(--accent)}
+
   .strobewrap{position:relative;cursor:pointer}
   .strobewrap .playbtn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     background:rgba(10,11,14,.25);transition:.15s}
@@ -335,10 +351,14 @@
   </div>
   <p>Every note came back solved the same day. Emma on the logo walk: <b>"can you push the scanlines a bit more intense?"</b> Scanlines are the thin horizontal lines old TVs drew. My heavier version read darker, so I explained why (wider lines fake darkness) and went thinner-but-more instead. Emma: <b>"PERFECT!"</b></p>
   <p>Same rhythm everywhere else: <b>"I loveee the tv lined cherries"</b> came with <b>"maybe every third bounce"</b>, revised within the hour. And when the headphones loop read too clear head-on, I pushed the dither harder right there, because the anonymity WAS the point.</p>
-  <div class="grid2 mt">
-    <div><img class="img169" src="assets/scanlines_before_v1.jpg" alt="Scanlines version 1, finer lines" style="object-fit:cover"><div class="cap">Scanlines v1: the starting point</div></div>
-    <div><img class="img169" src="assets/scanlines_v3_final.jpg" alt="Scanlines version 3, the approved version" style="object-fit:cover"><div class="cap">Scanlines v3: "PERFECT!" (same frame, same timecode)</div></div>
+  <div class="baslider mt" id="scanslider">
+    <img src="assets/scanlines_v3_final.jpg" alt="Scanlines version 3, the approved version">
+    <img class="ba-top" src="assets/scanlines_before_v1.jpg" alt="Scanlines version 1, the starting point">
+    <div class="ba-line"><span class="ba-knob">⟷</span></div>
+    <div class="ba-tag ba-tag-l">v1 · before</div>
+    <div class="ba-tag ba-tag-r">v3 · "PERFECT!"</div>
   </div>
+  <div class="cap">Drag the line: v1 on the left, the approved v3 on the right. Same frame, same timecode.</div>
 </section>
 
 <!-- DELIVERY -->
@@ -466,6 +486,21 @@
     });
     v.addEventListener('ended',function(){ v.load(); w.classList.remove('playing'); });
   });
+  // before/after drag sliders
+  [].slice.call(document.querySelectorAll('.baslider')).forEach(function(el){
+    function setPos(clientX){
+      var r=el.getBoundingClientRect();
+      var pct=Math.max(2,Math.min(98,(clientX-r.left)/r.width*100));
+      el.style.setProperty('--pos',pct+'%');
+    }
+    el.addEventListener('pointerdown',function(e){
+      el.setPointerCapture(e.pointerId); setPos(e.clientX);
+      function mv(ev){ setPos(ev.clientX); }
+      function up(ev){ el.removeEventListener('pointermove',mv); el.removeEventListener('pointerup',up); }
+      el.addEventListener('pointermove',mv); el.addEventListener('pointerup',up);
+    });
+  });
+
   var vids=[].slice.call(document.querySelectorAll('video')).filter(function(v){return !v.closest('[data-strobe]');});
   vids.forEach(function(v){v.muted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');});
   function play(v){var p=v.play();if(p&&p.catch)p.catch(function(){});}
