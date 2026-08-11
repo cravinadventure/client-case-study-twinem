@@ -375,14 +375,14 @@
     <h2>A custom coded tool, built mid-sprint.</h2>
   </div>
   <p><b>Dithering</b> is the chunky dot-pattern pixelation old screens used to fake shades of color. The plugins that do it well were too expensive, and I knew I could build my own in about an hour for this project. So I did: wrote my own dithering tool, tuned it to their palette, and ran the loop through it. Full transparency: AI helped me write the tool's code. What the tool puts on screen is their real footage, dithered, never AI imagery.</p>
-  <div class="mt">
-    <img src="assets/dither_lab_ui.jpg" alt="The dither-lab tool: live dither preview with algorithm picker and sliders for diffusion, scale, contrast, midtones, threshold, palette, and frame hold" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000">
-    <div class="cap">The tool itself: every slider is a decision a preset couldn't make</div>
-  </div>
   <p class="mt">Afterwards, I built <b>a wrapper on this tool just for the TWINEM brand</b> and gave it to them for free: their wordmark on the chassis, their colors on the keys, their four-point star, a vector I tweaked after the fact, as the actual pixel every image gets drawn from, plus both signature looks from their pack, star pixels and TV lines. It's theirs to use anytime, and their fans can use it too, making branded videos in their exact style. In the real version their song plays on a loop while you work, and any video captured in the app comes out with their music embedded in the file.</p>
   <div class="grid2 mt">
     <div><video class="vid169" autoplay loop muted playsinline preload="auto"><source src="assets/dither_before_raw.mp4?v=1" type="video/mp4"></video><div class="cap">Before: their raw phone footage</div></div>
     <div><video class="vid169" autoplay loop muted playsinline preload="auto"><source src="assets/dither_after_bayer.mp4?v=1" type="video/mp4"></video><div class="cap">After: through my dither tool</div></div>
+  </div>
+  <div class="mt">
+    <img src="assets/dither_lab_ui.jpg" alt="The dither-lab tool: live dither preview with algorithm picker and sliders for diffusion, scale, contrast, midtones, threshold, palette, and frame hold" style="width:100%;display:block;border:1px solid var(--accent-dim);background:#000">
+    <div class="cap">The tool itself: every slider is a decision a preset couldn't make</div>
   </div>
   <div style="margin-top:24px">
     <iframe src="dither-demo/" title="TWINEM visualizer, live demo: knobs for scale, contrast, midtones and threshold, star and TV-line looks, three dot colors, load your own file or camera" loading="lazy" style="width:100%;aspect-ratio:16/10;display:block;border:1px solid var(--accent-dim);background:#000" allow="camera"></iframe>
