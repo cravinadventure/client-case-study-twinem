@@ -296,5 +296,45 @@ html, body { overflow: hidden; }
   setTimeout(fitTV, 300); setTimeout(fitTV, 1200); setTimeout(fitTV, 3000);
 })();
 </script>
+<script>
+// ---- the two embedded demos are one machine: actions mirror across them ----
+(function(){
+  if (!window.BroadcastChannel) return;
+  var ch = new BroadcastChannel('twinem-demo-sync');
+  var applying = false;
+  ['diff','blur','scale','con','mid','thr','hold'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function(){ if (!applying) ch.postMessage({t:'in', id:id, v:el.value}); });
+  });
+  document.addEventListener('click', function(e){
+    if (applying) return;
+    var b = e.target.closest && e.target.closest('#m-star, #m-lines, #demo');
+    if (b) { ch.postMessage({t:'btn', id:b.id}); return; }
+    var sw = e.target.closest && e.target.closest('.swatch');
+    if (sw) {
+      var row = sw.closest('.colorrow');
+      var rows = Array.prototype.slice.call(document.querySelectorAll('.colorrow'));
+      var sws = Array.prototype.slice.call(row.querySelectorAll('.swatch'));
+      ch.postMessage({t:'sw', r: rows.indexOf(row), i: sws.indexOf(sw)});
+    }
+  }, true);
+  ch.onmessage = function(ev){
+    var m = ev.data; applying = true;
+    try {
+      if (m.t === 'in') {
+        var el = document.getElementById(m.id);
+        if (el && el.value !== m.v) { el.value = m.v; el.dispatchEvent(new Event('input')); }
+      } else if (m.t === 'btn') {
+        var b = document.getElementById(m.id); if (b) b.click();
+      } else if (m.t === 'sw') {
+        var rows = document.querySelectorAll('.colorrow');
+        var sws = rows[m.r] && rows[m.r].querySelectorAll('.swatch');
+        if (sws && sws[m.i]) sws[m.i].click();
+      }
+    } finally { applying = false; }
+  };
+})();
+</script>
 </body>
 </html>
